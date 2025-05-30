@@ -1,11 +1,11 @@
 import React from 'react';
-import Details from './pages/Details';
+import Subscriptions from './pages/Subscriptions';
 
 function App() {
   return (
     <div>
       <h1>EZTech App</h1>
-      <Details />
+      <Subscriptions /> {/* ✅ corrected component usage */}
     </div>
   );
 }
