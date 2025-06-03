@@ -1,20 +1,20 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import Subscriptions from './pages/Subscriptions';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import Cart from './pages/Cart';
-
-function GoToCartButton() {
-  const navigate = useNavigate();
-  return <button onClick={() => navigate('/cart')}>Go to Cart</button>;
-}
+import Profile from './pages/Profile'; 
+import Home from './pages/Home'; 
 
 function App() {
   return (
     <Router>
-      <GoToCartButton />
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Subscriptions />} />
+        <Route path="/" element={<Home />} /> {/* This is Home */}
+        <Route path="/subscriptions" element={<Subscriptions />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );
