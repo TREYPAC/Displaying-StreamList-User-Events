@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Cart.css';
 
 function Cart() {
+  const navigate = useNavigate();
+
   return (
     <div
       className="cart-page"
@@ -14,12 +17,30 @@ function Cart() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'white'
+        color: 'white',
       }}
     >
       <div className="page-overlay fade-in">
         <h1>Cart Page</h1>
-        <p>This page is under construction and will be built in <strong>Week 4</strong>.</p>
+        <p>
+          This page is under construction and will be built in <strong>Week 4</strong>.
+        </p>
+        {/* Go to Checkout Button */}
+        <button
+          onClick={() => navigate('/checkout')}
+          style={{
+            marginTop: '24px',
+            padding: '12px 32px',
+            background: '#222',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '4px',
+            fontSize: '18px',
+            cursor: 'pointer',
+          }}
+        >
+          Go to Checkout
+        </button>
       </div>
     </div>
   );
