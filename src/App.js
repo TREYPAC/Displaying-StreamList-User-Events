@@ -1,6 +1,5 @@
-// src/App.js
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // Components
@@ -8,12 +7,14 @@ import Navbar from "./components/Navbar";
 
 // Pages
 import Home from "./pages/Home";
+import Search from "./pages/Search";
 import Subscriptions from "./pages/Subscriptions";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
-import Search from "./pages/Search";
 import LoginPage from "./pages/Login";
 import Checkout from "./pages/Checkout";
+import MovieDetails from './pages/MovieDetails';
+import About from './pages/About';
 
 // Utilities
 import ProtectedRoute from "./utils/ProtectedRoute";
@@ -23,6 +24,9 @@ import "./App.css";
 function App() {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
+
+  const location = useLocation(); // ✅ Get current route
+  const isLoginPage = location.pathname === "/login";
 
   useEffect(() => {
     const savedToken = localStorage.getItem("access_token");
@@ -50,16 +54,17 @@ function App() {
 
   return (
     <GoogleOAuthProvider clientId={googleClientId}>
-      {isAuthenticated && (
+      {/* ✅ Conditionally render Navbar and logo */}
+      {!isLoginPage && isAuthenticated && (
         <>
           <Navbar />
           <div className="logo-container">
             <img
-  src="logo-eztech-transparent.png"
-  alt="EZTech Logo"
-  className="logo-badge"
-  style={{ maxWidth: '220px', height: 'auto' }} // 👈 Control size
-/>
+              src="logo-eztech-transparent.png"
+              alt="EZTech Logo"
+              className="logo-badge"
+              style={{ maxWidth: "220px", height: "auto" }}
+            />
           </div>
         </>
       )}
@@ -69,9 +74,12 @@ function App() {
           path="/login"
           element={<LoginPage setToken={setToken} setUser={setUser} />}
         />
+
+        {/* Redirect authenticated users away from /login */}
         {isAuthenticated && (
           <Route path="/login" element={<Navigate to="/" replace />} />
         )}
+
         <Route
           path="/"
           element={
@@ -119,10 +127,16 @@ function App() {
               <Checkout />
             </ProtectedRoute>
           }
-        />
+          />
+        <Route path="/movie/:id" element={<ProtectedRoute isAuthenticated={isAuthenticated}><MovieDetails /></ProtectedRoute>} />
+
+        <Route path="/about" element={<ProtectedRoute isAuthenticated={isAuthenticated}><About /></ProtectedRoute>} />
+        
       </Routes>
     </GoogleOAuthProvider>
+    
   );
 }
 
 export default App;
+

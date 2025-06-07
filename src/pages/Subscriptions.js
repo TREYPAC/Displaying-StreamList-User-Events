@@ -1,12 +1,12 @@
+// src/pages/Subscriptions.js
 import React, { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
 import list from '../data/data';
-import localSocialImg from '../assets/social-subscription.png'; // ADD THIS
+import localSocialImg from '../assets/social-subscription.png'; // Only needed if "local_social" is used
 
 function Subscriptions() {
   const { addToCart } = useContext(CartContext);
 
-  // Function to resolve image path
   const getImageSrc = (img) => {
     if (img === 'local_social') {
       return localSocialImg;
@@ -25,8 +25,9 @@ function Subscriptions() {
               alt={item.service}
               width="100%"
               height="150"
+              style={{ objectFit: 'cover' }}
               onError={(e) => {
-                e.target.src = 'https://via.placeholder.com/150?text=Image+Not+Found';
+                e.target.src = 'https://via.placeholder.com/150?text=No+Image';
               }}
             />
             <h3>{item.service}</h3>
