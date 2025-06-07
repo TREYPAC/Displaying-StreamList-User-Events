@@ -1,14 +1,16 @@
+// src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
-import { CartProvider } from './context/CartContext';
+import { BrowserRouter } from 'react-router-dom';
+import { CartProvider } from './context/CartContext'; // ✅ Import CartProvider
+import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <CartProvider>
+  <BrowserRouter>
+    <CartProvider> {/* ✅ Wrap App in CartProvider */}
       <App />
     </CartProvider>
-  </React.StrictMode>
+  </BrowserRouter>
 );
