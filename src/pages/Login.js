@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 function LoginPage({ setToken, setUser }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // Get the navigate function
+
   const login = useGoogleLogin({
     onSuccess: async tokenResponse => {
+      // Store token and user info in state and localStorage
       setToken(tokenResponse.access_token);
-      // Fetch user info from Google
+      localStorage.setItem('access_token', tokenResponse.access_token); // Store in localStorage
+
       const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
         headers: {
           Authorization: `Bearer ${tokenResponse.access_token}`,
@@ -13,6 +20,10 @@ function LoginPage({ setToken, setUser }) {
       });
       const userInfo = await res.json();
       setUser(userInfo);
+      localStorage.setItem('user', JSON.stringify(userInfo)); // Store user in localStorage
+
+      // *** Add navigation here after successful login ***
+      navigate('/'); // Redirect to the home page or desired route
     },
     onError: errorResponse => {
       alert('Login Failed!');
@@ -21,6 +32,15 @@ function LoginPage({ setToken, setUser }) {
     flow: 'implicit',
     scope: 'openid email profile',
   });
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log('Username:', username);
+    console.log('Password:', password);
+    // Add your traditional login logic here
+    // If traditional login is successful, you would also navigate:
+    // navigate('/');
+  };
 
   return (
     <div
@@ -61,11 +81,13 @@ function LoginPage({ setToken, setUser }) {
         <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '32px', color: '#222', textAlign: 'center' }}>
           Welcome to EZTech Movies!
         </h2>
-        <form style={{ width: '100%' }}>
+        <form style={{ width: '100%' }} onSubmit={handleSubmit}>
           <input
             type="Text"
             placeholder="Username"
             required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             style={{
               width: '100%',
               padding: '14px 2px',
@@ -80,6 +102,8 @@ function LoginPage({ setToken, setUser }) {
             type="password"
             placeholder="Password"
             required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             style={{
               width: '100%',
               padding: '14px 2px',
@@ -103,7 +127,7 @@ function LoginPage({ setToken, setUser }) {
               <input type="checkbox" /> Remember me
             </label>
             <a href="#" style={{ color: '#a87cf4', textDecoration: 'none', fontWeight: 500 }}>
-             
+             Forgot Password?
             </a>
           </div>
           <button
