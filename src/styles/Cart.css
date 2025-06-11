@@ -1,21 +1,109 @@
-.page-overlay {
-  background-color: rgba(0, 0, 0, 0.6);
-  padding: 2rem;
-  border-radius: 12px;
-  text-align: center;
-  max-width: 600px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
+.cart-container {
+  max-width: 480px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  padding: 32px 28px 24px 28px;
 }
 
-.fade-in {
-  animation: fadeIn 0.8s ease-in;
-  opacity: 0;
-  animation-fill-mode: forwards;
+.cart-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
 }
 
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+.cart-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-right: 18px;
+  border-radius: 8px;
 }
+
+.cart-item-details {
+  flex: 1;
+}
+
+.cart-item-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.cart-item-qty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.subtract-btn,
+.add-btn {
+  margin-left: 8px;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.subtract-btn:hover {
+  background: #f44336;
+  color: #fff;
+  border-color: #f44336;
+}
+
+.add-btn:hover {
+  background: #1976d2;
+  color: #fff;
+  border-color: #1976d2;
+}
+
+.subtotal {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: right;
+  margin-top: 24px;
+}
+
+.checkout-btn {
+  width: 100%;
+  padding: 12px 0;
+  background: linear-gradient(90deg, #1976d2 0%, #1565c0 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 18px;
+}
+
+.checkout-btn:hover {
+  background: linear-gradient(90deg, #1565c0 0%, #1976d2 100%);
+}
+.cart-item-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 4px;
+}
+
+.cart-item-name {
+  font-weight: 500;
+  font-size: 1.05rem;
+}
+
+.cart-item-description {
+  font-size: 0.97rem;
+  color: #666;
+  margin-top: 2px;
+  margin-left: 0;
+  line-height: 1.3;
+}
+

@@ -1,25 +1,22 @@
 import React, { useContext, useState } from "react";
 import { CartContext } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
+import "../Checkout.css";
 
 export default function Checkout() {
   const { cart, setCart } = useContext(CartContext);
   const [cardNumber, setCardNumber] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Format check for card
     const cardFormat = /^\d{4} \d{4} \d{4} \d{4}$/;
     if (!cardFormat.test(cardNumber)) {
       alert("Invalid card number format. Use: 1234 5678 9012 3456");
       return;
     }
-
-    // Save card to localStorage
     localStorage.setItem("creditCard", cardNumber);
     alert("Your payment was saved and order placed!");
-
-    // Clear cart
     setCart([]);
   };
 
@@ -28,86 +25,74 @@ export default function Checkout() {
   const total = subtotal + tax;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f4f4f4", padding: "40px" }}>
-      <div style={{
-        maxWidth: "800px",
-        margin: "0 auto",
-        background: "#fff",
-        borderRadius: "10px",
-        padding: "30px",
-        boxShadow: "0 0 10px rgba(0,0,0,0.1)"
-      }}>
-        <h2 style={{ textAlign: "center", marginBottom: "24px" }}>Checkout</h2>
-
-        {/* 🧾 ORDER SUMMARY */}
-        <h3>Order Summary</h3>
-        <div>
-          {cart.length === 0 ? (
-            <p>No items in cart.</p>
-          ) : (
-            cart.map((item) => (
-              <div key={item.id} style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                marginBottom: "12px",
-                borderBottom: "1px solid #ddd",
-                paddingBottom: "12px"
-              }}>
-                {item.image && (
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }}
-                  />
-                )}
-                <div>
-                  <h4 style={{ margin: "0 0 4px" }}>{item.title}</h4>
-                  <p style={{ margin: "0" }}>${item.price.toFixed(2)} x {item.quantity}</p>
-                </div>
-              </div>
-            ))
-          )}
+    <div className="checkout-container">
+      <h2>Checkout</h2>
+      <button
+        type="button"
+        className="update-cart-btn"
+        onClick={() => navigate("/cart")}
+      >
+        Update Cart
+      </button>
+      {cart.length === 0 ? (
+        <div className="empty-cart">
+          <p>No items in cart.</p>
         </div>
-
-        {/* Totals */}
-        <div style={{ textAlign: "right", marginTop: "20px" }}>
-          <p><strong>Subtotal:</strong> ${subtotal.toFixed(2)}</p>
-          <p><strong>Tax:</strong> ${tax.toFixed(2)}</p>
-          <p><strong>Total:</strong> ${total.toFixed(2)}</p>
-        </div>
-
-        {/* 💳 PAYMENT */}
-        <form onSubmit={handleSubmit} style={{ marginTop: "30px", display: "flex", flexDirection: "column", gap: "16px" }}>
-          <h3>Payment Information</h3>
-          <input
-            type="text"
-            placeholder="Card Number (1234 5678 9012 3456)"
-            value={cardNumber}
-            onChange={(e) => setCardNumber(e.target.value)}
-            required
-            style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
-          />
-          <div style={{ display: "flex", gap: "10px" }}>
-            <input type="text" placeholder="Expiry MM/YY" required style={{ flex: 1, padding: "10px" }} />
-            <input type="text" placeholder="CVV" required style={{ width: "80px", padding: "10px" }} />
+      ) : (
+        <>
+          <div className="order-summary">
+            <ul>
+              {cart.map((item, idx) => (
+                <li key={idx} className="cart-item">
+                  <div className="cart-item-details">
+                    <div className="cart-item-header">
+                      <span className="cart-item-name">{item.service}</span>
+                      {item.serviceInfo && (
+                        <span className="cart-item-description">
+                          {" "}- {item.serviceInfo}
+                        </span>
+                      )}
+                    </div>
+                    <div className="cart-item-qty">
+                      ${item.price.toFixed(2)} × {item.quantity}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="summary-totals">
+              <p className="subtotal">
+                <span>Subtotal:</span>
+                <span>${subtotal.toFixed(2)}</span>
+              </p>
+              <p>
+                <span>Tax:</span>
+                <span>${tax.toFixed(2)}</span>
+              </p>
+              <p>
+                <span>Total:</span>
+                <span>${total.toFixed(2)}</span>
+              </p>
+            </div>
           </div>
-          <button
-            type="submit"
-            style={{
-              background: "#007bff",
-              color: "#fff",
-              padding: "14px",
-              border: "none",
-              borderRadius: "5px",
-              fontSize: "1rem",
-              cursor: "pointer"
-            }}
-          >
-            Place Order
-          </button>
-        </form>
-      </div>
+          <form onSubmit={handleSubmit}>
+            <label>
+              Card Number:
+              <input
+                type="text"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value)}
+                placeholder="1234 5678 9012 3456"
+                required
+                className="checkout-input"
+              />
+            </label>
+            <button type="submit" className="checkout-btn">
+              Place Order
+            </button>
+          </form>
+        </>
+      )}
     </div>
   );
 }

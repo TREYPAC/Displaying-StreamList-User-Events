@@ -2,58 +2,60 @@ import React, { createContext, useState, useEffect } from 'react';
 
 export const CartContext = createContext();
 
-export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+export const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState(() => {
+    const stored = localStorage.getItem('cart');
+    return stored ? JSON.parse(stored) : [];
+  });
 
-  // Load cart from localStorage on mount
   useEffect(() => {
-    const storedCart = localStorage.getItem('cartItems');
-    if (storedCart) {
-      setCart(JSON.parse(storedCart));
-    }
-  }, []);
-
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cart));
+    localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
-  // Add item to cart or increase quantity
-  const addToCart = (product) => {
-    setCart((prev) => {
-      const found = prev.find((item) => item.id === product.id);
-      if (found) {
-        return prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prev, { ...product, quantity: 1 }];
-    });
+  const addToCart = (item) => {
+    const found = cart.find((cartItem) => cartItem.id === item.id);
+    if (found) {
+      setCart(
+        cart.map((cartItem) =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        )
+      );
+    } else {
+      setCart([...cart, { ...item, quantity: 1 }]);
+    }
   };
 
-  // Remove item from cart
-  const removeFromCart = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+  const subtractFromCart = (item) => {
+    const found = cart.find((cartItem) => cartItem.id === item.id);
+    if (!found) return;
+    if (found.quantity === 1) {
+      setCart(cart.filter((cartItem) => cartItem.id !== item.id));
+    } else {
+      setCart(
+        cart.map((cartItem) =>
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity - 1 }
+            : cartItem
+        )
+      );
+    }
   };
 
-  // Update quantity of an item
-  const updateQuantity = (id, qty) => {
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, Number(qty) || 1) }
-          : item
-      )
-    );
-  };
+  const clearCart = () => setCart([]);
 
   return (
     <CartContext.Provider
-      value={{ cart, setCart, addToCart, removeFromCart, updateQuantity }}
+      value={{
+        cart,
+        setCart,
+        addToCart,
+        subtractFromCart,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>
   );
-}
+};
